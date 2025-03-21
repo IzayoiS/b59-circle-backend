@@ -1,0 +1,117 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id String @id @default(uuid())
+
+  email    String @unique
+  username String @unique
+  password String
+
+  profile    Profile?
+  threads    Thread[]
+  likes      Like[]
+  replies    Reply[]
+  followers  Follow[] @relation("FollowedUser")
+  followings Follow[] @relation("FollowingUser")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Profile {
+  id String @id @default(uuid())
+
+  fullName  String
+  avatarUrl String?
+  bannerUrl String?
+  bio       String?
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("profiles")
+}
+
+model Thread {
+  id String @id @default(uuid())
+
+  content String
+  images  String?
+  likes   Like[]
+  replies Reply[]
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("threads")
+}
+
+model Follow {
+  id String @id @default(uuid())
+
+  followed   User   @relation(name: "FollowedUser", fields: [followedId], references: [id], onDelete: Cascade)
+  followedId String
+
+  following   User   @relation(name: "FollowingUser", fields: [followingId], references: [id], onDelete: Cascade)
+  followingId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([followingId, followedId])
+  @@map("follows")
+}
+
+model Like {
+  id String @id @default(uuid())
+
+  thread   Thread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  threadId String
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, threadId])
+  @@map("likes")
+}
+
+model Reply {
+  id      String  @id @default(uuid())
+  content String
+  images  String?
+
+  thread   Thread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  threadId String
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("replys")
+}
