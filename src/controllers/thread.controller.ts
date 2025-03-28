@@ -65,7 +65,6 @@ class ThreadController {
   async getUserThreads(req: Request, res: Response, next: NextFunction) {
     try {
       const { userId } = req.params;
-      console.log('user yg login', userId);
 
       if (!userId) {
         res.status(400).json({ message: 'User ID is required' });
@@ -117,6 +116,50 @@ class ThreadController {
       res.json({
         message: 'Thread created!',
         data: { ...thread },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async updateThread(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const userId = (req as any).user.id;
+      const { content } = req.body;
+
+      const updatedThread = await threadService.updateThread(userId, id, {
+        content,
+      });
+
+      if (!updatedThread) {
+        res.status(404).json({ message: 'Thread not found or unauthorized' });
+        return;
+      }
+
+      res.json({
+        message: 'Thread updated successfully!',
+        data: updatedThread,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async deleteThread(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const userId = (req as any).user.id;
+
+      const deletedThread = await threadService.deleteThread(userId, id);
+
+      if (!deletedThread) {
+        res.status(404).json({ message: 'Thread not found or unauthorized' });
+        return;
+      }
+
+      res.json({
+        message: 'Thread deleted successfully!',
       });
     } catch (error) {
       next(error);

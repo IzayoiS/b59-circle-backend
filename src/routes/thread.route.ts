@@ -8,10 +8,10 @@ import { uploadImage } from '../middlewares/upload.middleware';
 const router = express.Router();
 
 const limiter = rateLimit({
-  windowMs: 5 * 60 * 1000, // 5 menit
-  max: 100, // Maksimum 100 request per 5 menit per IP
-  standardHeaders: true, // Menggunakan header RateLimit standar (RFC 6585)
-  legacyHeaders: false, // Menonaktifkan header RateLimit lama (X-RateLimit-*)
+  windowMs: 5 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
   message: {
     message: 'Too many requests, please try again later.',
   },
@@ -19,6 +19,8 @@ const limiter = rateLimit({
 
 router.get('/', authCheck, threadController.getThreads);
 router.get('/:id', authCheck, threadController.getThreadById);
+router.patch('/:id', authCheck, threadController.updateThread);
+router.delete('/:id', authCheck, threadController.deleteThread);
 router.get('/user/:userId', authCheck, threadController.getUserThreads);
 router.post(
   '/',

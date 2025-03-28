@@ -17,25 +17,23 @@ class ProfileService {
     });
   }
 
-  async updateUserProfile(
-    id: string,
-    data: { fullName: string; username: string; bio: string },
-  ) {
-    return await prisma.$transaction([
-      prisma.user.update({
-        where: { id },
-        data: {
-          username: data.username,
+  async updateUserProfile(userId: string, data: updatedUserProfileDTO) {
+    const { fullName, username, bio, avatar } = data;
+
+    return await prisma.user.update({
+      where: { id: userId },
+      data: {
+        username,
+        profile: {
+          update: {
+            fullName,
+            bio,
+            avatarUrl: avatar,
+          },
         },
-      }),
-      prisma.profile.update({
-        where: { userId: id },
-        data: {
-          fullName: data.fullName,
-          bio: data.bio,
-        },
-      }),
-    ]);
+      },
+      include: { profile: true },
+    });
   }
 }
 

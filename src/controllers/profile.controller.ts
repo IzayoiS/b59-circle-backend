@@ -1,5 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import profileService from '../services/profile.service';
+import { v2 as cloudinary, UploadApiResponse } from 'cloudinary';
+import fs from 'fs';
+import { updatedUserProfileSchema } from '../utils/schemas/profile.schema';
 
 class ProfileController {
   async getUserProfileById(req: Request, res: Response, next: NextFunction) {
@@ -33,26 +36,29 @@ class ProfileController {
         } 
     */
     try {
-      const { id } = req.params;
-      const body = req.body;
-      const user = await profileService.getUserProfileById(id);
+      let uploadResult: UploadApiResponse = {} as UploadApiResponse;
 
-      if (!user) {
-        res.status(404).json({
-          message: 'User not found!',
-        });
-        return;
+      if (req.file) {
+        uploadResult = await cloudinary.uploader.upload(req.file.path);
+        fs.unlinkSync(req.file.path);
       }
 
-      const { fullName, username, bio } = body;
+      const body = {
+        ...req.body,
+        avatar: uploadResult.secure_url ?? undefined,
+      };
 
-      const updatedUser = await profileService.updateUserProfile(id, {
-        fullName: fullName || user.fullName,
-        username: username || user.user.username,
-        bio: bio || user.bio,
+      const userId = (req as any).user.id;
+      const validatedBody = await updatedUserProfileSchema.validateAsync(body);
+      const updatedUser = await profileService.updateUserProfile(
+        userId,
+        validatedBody,
+      );
+
+      res.json({
+        message: 'Profile updated successfully!',
+        data: updatedUser,
       });
-
-      res.json(updatedUser);
     } catch (error) {
       next(error);
     }

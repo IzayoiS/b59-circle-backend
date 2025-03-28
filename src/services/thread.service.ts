@@ -65,6 +65,41 @@ class ThreadService {
       },
     });
   }
+
+  async updateThread(
+    userId: string,
+    threadId: string,
+    data: { content?: string },
+  ) {
+    const thread = await prisma.thread.findUnique({
+      where: { id: threadId },
+    });
+
+    if (!thread || thread.userId !== userId) {
+      return null;
+    }
+
+    return await prisma.thread.update({
+      where: { id: threadId },
+      data,
+    });
+  }
+
+  async deleteThread(userId: string, threadId: string) {
+    const thread = await prisma.thread.findUnique({
+      where: { id: threadId },
+    });
+
+    if (!thread || thread.userId !== userId) {
+      return null;
+    }
+
+    await prisma.thread.delete({
+      where: { id: threadId },
+    });
+
+    return { message: 'Thread deleted successfully' };
+  }
 }
 
 export default new ThreadService();

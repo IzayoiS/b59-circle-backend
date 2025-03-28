@@ -23,9 +23,7 @@ class UserController {
   async getUserByUsername(req: Request, res: Response, next: NextFunction) {
     try {
       const { username } = req.params;
-      console.log('Menerima request untuk username:', username);
       const user = await userService.getUserByUsername(username);
-      console.log('User ditemukan:', user);
 
       if (!user) {
         res.status(404).json({ message: 'User not found' });
