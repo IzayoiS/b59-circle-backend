@@ -68,8 +68,14 @@ class UserController {
 
   async getSuggestedUsers(req: Request, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
-      const users = await userService.getSuggestedUsers(id);
+      const { userId } = req.query;
+
+      if (!userId || typeof userId !== 'string') {
+        res.status(400).json({ message: 'User ID is required' });
+        return;
+      }
+
+      const users = await userService.getSuggestedUsers(userId);
 
       res.json(users);
     } catch (error) {

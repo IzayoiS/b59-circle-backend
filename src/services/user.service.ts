@@ -128,13 +128,10 @@ class UserService {
     });
   }
 
-  async getSuggestedUsers(userId: string) {
-    return await prisma.user.findMany({
+  async getSuggestedUsers(loggedInUserId: string) {
+    const users = await prisma.user.findMany({
       where: {
-        id: { not: userId },
-        followers: {
-          none: { id: userId },
-        },
+        id: { not: loggedInUserId },
       },
       select: {
         id: true,
@@ -149,12 +146,45 @@ class UserService {
         _count: {
           select: {
             followers: true,
-            followings: true,
           },
         },
+        followers: {
+          select: { id: true },
+        },
+        followings: {
+          select: { id: true },
+        },
       },
-      take: 5,
     });
+
+    const followings = await prisma.follow.findMany({
+      where: {
+        followingId: loggedInUserId,
+      },
+      select: {
+        followedId: true,
+      },
+    });
+
+    const followedUserIds = followings.map((f) => f.followedId);
+
+    const filteredUsers = users
+      .filter((user) => !followedUserIds.includes(user.id))
+      .map((user) => {
+        const hasFollowedMe = user.followers.some(
+          (f) => f.id === loggedInUserId,
+        );
+        const iFollowHim = user.followings.some((f) => f.id === loggedInUserId);
+        return { ...user, hasFollowedMe, iFollowHim };
+      })
+      .sort((a, b) => {
+        if (b.hasFollowedMe !== a.hasFollowedMe) {
+          return b.hasFollowedMe ? 1 : -1;
+        }
+        return b._count.followers - a._count.followers;
+      });
+
+    return filteredUsers.slice(0, 5);
   }
 
   async updateUserById(id: string, data: UpdateUserDTO) {
