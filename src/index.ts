@@ -25,7 +25,7 @@ app.use(
       'http://localhost:5173',
       'http://localhost:4173',
       'https://b59-circle.vercel.app',
-      'https://b59-circle-frontend-eight.vercel.app/',
+      'https://b59-circle-frontend-eight.vercel.app',
     ],
   }),
 );
