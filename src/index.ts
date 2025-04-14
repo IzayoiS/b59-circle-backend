@@ -21,12 +21,7 @@ const PORT = process.env.PORT;
 console.log(process.env.FRONTEND_BASE_URL);
 app.use(
   cors({
-    origin: [
-      'https://b59-circle-frontend-dnaxqiiwf-izayois-projects.vercel.app',
-      // Add any other frontend URLs that need access (like preview deployments)
-      // /\.vercel\.app$/, // This would allow all vercel.app subdomains (optional)
-      'http://localhost:3000', // For local development
-    ],
+    origin: process.env.FRONTEND_BASE_URL,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   }),
@@ -35,7 +30,6 @@ app.use(
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
-
 app.use(rootRouter);
 app.use('/users', userRouter);
 app.use('/auth', authRouter);
