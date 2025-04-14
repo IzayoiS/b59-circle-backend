@@ -22,10 +22,11 @@ const PORT = process.env.PORT;
 app.use(
   cors({
     origin: process.env.FRONTEND_BASE_URL,
-    methods: ['GET', 'POST', 'DELETE', 'PATCH'],
+    methods: ['GET,POST,PUT,PATCH,DELETE'],
     credentials: true,
   }),
 );
+
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
