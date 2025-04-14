@@ -21,7 +21,14 @@ const PORT = process.env.PORT;
 console.log(process.env.FRONTEND_BASE_URL);
 app.use(
   cors({
-    origin: process.env.FRONTEND_BASE_URL,
+    origin: (origin, callback) => {
+      console.log('Incoming Origin:', origin);
+      if (!origin || origin === process.env.FRONTEND_BASE_URL) {
+        callback(null, true);
+      } else {
+        callback(new Error(`CORS blocked for origin: ${origin}`));
+      }
+    },
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   }),
