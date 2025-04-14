@@ -26,7 +26,9 @@ app.use(
     credentials: true,
   }),
 );
-
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+});
 app.use(rootRouter);
 app.use('/users', userRouter);
 app.use('/auth', authRouter);
