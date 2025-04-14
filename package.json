@@ -6,7 +6,8 @@
     "dev": "nodemon src/index.ts",
     "prepare": "husky",
     "build": "npx prisma generate && tsc",
-    "swagger": "ts-node swagger/swagger.ts"
+    "swagger": "ts-node swagger/swagger.ts",
+    "postinstall": "prisma generate && prisma migrate deploy"
   },
   "keywords": [],
   "author": "Iqbal Muhammad Hasbi",
