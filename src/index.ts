@@ -24,7 +24,7 @@ app.use(
     origin: [
       'https://b59-circle-frontend-dnaxqiiwf-izayois-projects.vercel.app',
       // Add any other frontend URLs that need access (like preview deployments)
-      /\.vercel\.app$/, // This would allow all vercel.app subdomains (optional)
+      // /\.vercel\.app$/, // This would allow all vercel.app subdomains (optional)
       'http://localhost:3000', // For local development
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
