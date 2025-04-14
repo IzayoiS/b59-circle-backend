@@ -2,6 +2,6 @@
   "version": 2,
   "builds": [{ "src": "src/index.ts", "use": "@vercel/node" }],
   "routes": [{ "src": "/(.*)", "dest": "src/index.ts" }],
-  "buildCommand": "npm install && npx prisma generate && npm run build",
+  "buildCommand": "npm run build",
   "outputDirectory": "dist"
 }

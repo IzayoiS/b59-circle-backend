@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "nodemon src/index.ts",
     "prepare": "husky",
-    "build": "npx prisma generate && next build",
+    "build": "npx prisma generate && tsc",
     "swagger": "ts-node swagger/swagger.ts"
   },
   "keywords": [],
