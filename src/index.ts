@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+dotenv.config();
 import express from 'express';
 import cors from 'cors';
 import rootRouter from './routes/root.route';
@@ -13,16 +14,20 @@ import { errorHandler } from './middlewares/error.middleware';
 import swaggerUi from 'swagger-ui-express';
 import swaggerDoc from '../swagger/swagger-output.json';
 
-dotenv.config();
-
 const app = express();
 app.use(express.json());
 const PORT = process.env.PORT;
 
+console.log(process.env.FRONTEND_BASE_URL);
 app.use(
   cors({
-    origin: process.env.FRONTEND_BASE_URL,
-    methods: ['GET,POST,PUT,PATCH,DELETE'],
+    origin: [
+      'https://b59-circle-frontend-dnaxqiiwf-izayois-projects.vercel.app',
+      // Add any other frontend URLs that need access (like preview deployments)
+      /\.vercel\.app$/, // This would allow all vercel.app subdomains (optional)
+      'http://localhost:3000', // For local development
+    ],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   }),
 );
@@ -30,6 +35,7 @@ app.use(
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
+
 app.use(rootRouter);
 app.use('/users', userRouter);
 app.use('/auth', authRouter);

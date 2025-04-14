@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/index.ts",
+    "dev": "nodemon ./src/index.ts",
     "prepare": "husky",
     "swagger": "ts-node swagger/swagger.ts",
     "build": "tsc",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate && prisma deploy"
   },
   "keywords": [],
   "author": "Iqbal Muhammad Hasbi",
