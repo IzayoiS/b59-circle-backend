@@ -7,7 +7,7 @@
     "prepare": "husky",
     "swagger": "ts-node swagger/swagger.ts",
     "build": "tsc",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate && prisma migrate deploy"
   },
   "keywords": [],
   "author": "Iqbal Muhammad Hasbi",
