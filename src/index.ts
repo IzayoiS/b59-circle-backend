@@ -21,9 +21,7 @@ const PORT = process.env.PORT;
 
 app.use(
   cors({
-    origin: 'https://b59-circle-frontend-eight.vercel.app',
-    methods: ['GET', 'POST', 'DELETE', 'PATCH'],
-    credentials: true,
+    origin: true,
   }),
 );
 
