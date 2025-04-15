@@ -15,6 +15,7 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerDoc from '../swagger/swagger-output.json';
 
 const app = express();
+app.set('trust proxy', 1);
 app.use(express.json());
 const PORT = process.env.PORT;
 
