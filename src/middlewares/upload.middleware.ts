@@ -1,4 +1,7 @@
 import multer from 'multer';
+import { v2 as cloudinary } from 'cloudinary';
+import { Request, Response, NextFunction } from 'express';
+import streamifier from 'streamifier';
 
 const whitelist = ['image/png', 'image/jpeg', 'image/jpg'];
 
@@ -13,3 +16,38 @@ export const uploadImage = multer({
     cb(null, true);
   },
 });
+
+export const uploadToCloudinary = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    if (!req.file) return next();
+
+    const buffer = req.file.buffer;
+
+    const streamUpload = () => {
+      return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          { folder: 'circle-app' },
+          (error, result) => {
+            if (result) {
+              resolve(result);
+            } else {
+              reject(error);
+            }
+          },
+        );
+        streamifier.createReadStream(buffer).pipe(stream);
+      });
+    };
+
+    const result = await streamUpload();
+    req.body.image = (result as any).secure_url;
+    next();
+  } catch (err) {
+    console.error('Upload Cloudinary error:', err);
+    res.status(500).json({ message: 'Failed to upload image' });
+  }
+};

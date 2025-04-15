@@ -3,7 +3,10 @@ import threadController from '../controllers/thread.controller';
 import { authCheck } from '../middlewares/auth-check.middleware';
 import { initCloudinary } from '../middlewares/cloudinary.middleware';
 import rateLimit from 'express-rate-limit';
-import { uploadImage } from '../middlewares/upload.middleware';
+import {
+  uploadImage,
+  uploadToCloudinary,
+} from '../middlewares/upload.middleware';
 
 const router = express.Router();
 
@@ -28,6 +31,7 @@ router.post(
   authCheck,
   initCloudinary,
   uploadImage.single('images'),
+  uploadToCloudinary,
   threadController.createThread,
 );
 
