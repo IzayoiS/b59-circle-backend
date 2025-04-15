@@ -107,7 +107,7 @@ class ThreadController {
 
       const body = {
         ...req.body,
-        images: uploadResult.secure_url ?? undefined,
+        images: uploadResult.secure_url || '',
       };
 
       const userId = (req as any).user.id;

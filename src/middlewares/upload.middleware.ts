@@ -29,16 +29,13 @@ export const uploadToCloudinary = async (
 
     const streamUpload = () => {
       return new Promise((resolve, reject) => {
-        const stream = cloudinary.uploader.upload_stream(
-          { folder: 'circle-app' },
-          (error, result) => {
-            if (result) {
-              resolve(result);
-            } else {
-              reject(error);
-            }
-          },
-        );
+        const stream = cloudinary.uploader.upload_stream((error, result) => {
+          if (result) {
+            resolve(result);
+          } else {
+            reject(error);
+          }
+        });
         streamifier.createReadStream(buffer).pipe(stream);
       });
     };
