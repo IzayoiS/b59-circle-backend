@@ -1,6 +1,9 @@
 import express from 'express';
 import profileController from '../controllers/profile.controller';
-import { uploadImage } from '../middlewares/upload.middleware';
+import {
+  uploadImage,
+  uploadToCloudinary,
+} from '../middlewares/upload.middleware';
 import { initCloudinary } from '../middlewares/cloudinary.middleware';
 import { authCheck } from '../middlewares/auth-check.middleware';
 
@@ -12,6 +15,7 @@ router.patch(
   authCheck,
   initCloudinary,
   uploadImage.single('avatar'),
+  uploadToCloudinary,
   profileController.updateUserProfile,
 );
 

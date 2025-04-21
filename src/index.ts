@@ -19,11 +19,9 @@ app.set('trust proxy', 1);
 app.use(express.json());
 const PORT = process.env.PORT;
 
-console.log(process.env.FRONTEND_BASE_URL);
 app.use(
   cors({
     origin: (origin, callback) => {
-      console.log('Incoming Origin:', origin);
       if (!origin || origin === process.env.FRONTEND_BASE_URL) {
         callback(null, true);
       } else {
@@ -39,6 +37,7 @@ app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 app.use(rootRouter);
+app.use(express.urlencoded({ extended: true }));
 app.use('/users', userRouter);
 app.use('/auth', authRouter);
 app.use('/threads', threadRouter);

@@ -41,7 +41,14 @@ export const uploadToCloudinary = async (
     };
 
     const result = await streamUpload();
-    req.body.image = (result as any).secure_url;
+    const url = (result as any).secure_url;
+
+    if (req.originalUrl.includes('/profile')) {
+      req.body.avatar = url;
+    } else if (req.originalUrl.includes('/threads')) {
+      req.body.images = url;
+    }
+
     next();
   } catch (err) {
     console.error('Upload Cloudinary error:', err);

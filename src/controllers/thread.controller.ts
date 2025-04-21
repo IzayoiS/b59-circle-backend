@@ -98,16 +98,16 @@ class ThreadController {
       */
 
     try {
-      let uploadResult: UploadApiResponse = {} as UploadApiResponse;
+      // let uploadResult: UploadApiResponse = {} as UploadApiResponse;
 
-      if (req.file) {
-        uploadResult = await cloudinary.uploader.upload(req.file?.path || '');
-        fs.unlinkSync(req.file.path);
-      }
+      // if (req.file) {
+      //   uploadResult = await cloudinary.uploader.upload(req.file?.path || '');
+      //   fs.unlinkSync(req.file.path);
+      // }
 
       const body = {
         ...req.body,
-        images: uploadResult.secure_url || '',
+        images: req.body.images || '',
       };
 
       const userId = (req as any).user.id;
@@ -115,7 +115,7 @@ class ThreadController {
       const thread = await threadService.createThread(userId, validatedBody);
       res.json({
         message: 'Thread created!',
-        data: { ...thread },
+        data: { ...thread, images: thread.images },
       });
     } catch (error) {
       next(error);

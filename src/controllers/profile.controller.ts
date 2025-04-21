@@ -36,16 +36,16 @@ class ProfileController {
         } 
     */
     try {
-      let uploadResult: UploadApiResponse = {} as UploadApiResponse;
+      // let uploadResult: UploadApiResponse = {} as UploadApiResponse;
 
-      if (req.file) {
-        uploadResult = await cloudinary.uploader.upload(req.file.path);
-        fs.unlinkSync(req.file.path);
-      }
+      // if (req.file) {
+      //   uploadResult = await cloudinary.uploader.upload(req.file.path);
+      //   fs.unlinkSync(req.file.path);
+      // }
 
       const body = {
         ...req.body,
-        avatar: uploadResult.secure_url ?? undefined,
+        avatar: req.body.avatar || '',
       };
 
       const userId = (req as any).user.id;
